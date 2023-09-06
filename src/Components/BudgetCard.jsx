@@ -11,7 +11,12 @@ const BudgetCard = ({ title, totalBudget }) => {
   const [showExpenseView, setShowExpenseView] = useState(false);
   const currentExpence = getExpensesAmount(title);
   return (
-    <div className="budgetCard">
+    <div
+      className="budgetCard"
+      style={{
+        backgroundColor: currentExpence > totalBudget ? "#FF6B6B" : "white",
+      }}
+    >
       <div className="info">
         <div>
           <h3>{title}</h3>
@@ -20,7 +25,17 @@ const BudgetCard = ({ title, totalBudget }) => {
           <b>${currentExpence}</b>/{totalBudget}
         </div>
       </div>
-      <ProgressBar now={setProgressBar(expenses, totalBudget)} />
+      <ProgressBar
+        animated
+        variant={
+          currentExpence < totalBudget / 2
+            ? "info"
+            : currentExpence < (3 / 4) * totalBudget
+            ? "warning"
+            : "danger"
+        }
+        now={setProgressBar(expenses, totalBudget)}
+      />
 
       <div className="btns">
         <button onClick={handleShowExpense}>Add Expense</button>
