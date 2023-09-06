@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
 import { BudgetContext } from "../Contexts/BudgetContext";
 
-const BudgetCard = ({ title, currentExpence, totalBudget }) => {
+const BudgetCard = ({ title, currentExpence, totalBudget, setProgressBar }) => {
   const [progress, setProgess] = useState(0);
-  const { handleShowExpense, viewExpenses } = useContext(BudgetContext);
+  const { handleShowExpense, getExpenses } = useContext(BudgetContext);
 
   return (
     <div className="budgetCard">
@@ -19,7 +19,9 @@ const BudgetCard = ({ title, currentExpence, totalBudget }) => {
 
       <div className="btns">
         <button onClick={handleShowExpense}>Add Expense</button>
-        <button onClick={() => viewExpenses(title)}>view Expenses</button>
+        <button onClick={() => console.log(getExpenses(title))}>
+          view Expenses
+        </button>
       </div>
     </div>
   );

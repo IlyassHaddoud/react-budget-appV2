@@ -16,6 +16,11 @@ const BudgetContextProvider = ({ children }) => {
   const handleCloseExpense = () => setShowExpense(false);
   const handleShowExpense = () => setShowExpense(true);
 
+  // Expense View Modal
+  const [showExpenseView, setShowExpenseView] = useState(false);
+  const handleCloseExpenseView = () => setShowExpenseView(false);
+  const handleShowExpenseView = () => setShowExpenseView(true);
+
   // Form
   const nameRef = useRef();
   const maximumSpendingRef = useRef();
@@ -50,11 +55,19 @@ const BudgetContextProvider = ({ children }) => {
     setShowExpense(false);
   };
 
-  const viewExpenses = (name) => {
+  const getExpenses = (name) => {
     const budget = budgets.filter((b) => {
       return b.name == name;
     });
-    console.log(budget[0].expenses);
+    return budget[0].expenses;
+  };
+
+  const setProgressBar = (expences, budget) => {
+    const sum = expences.reduce((total, ob) => {
+      return total + parseInt(ob.amount);
+    }, 0);
+
+    console.log(sum);
   };
 
   useEffect(() => {
@@ -78,7 +91,8 @@ const BudgetContextProvider = ({ children }) => {
         amountRef,
         budgetRef,
         handleSubmitExpense,
-        viewExpenses,
+        getExpenses,
+        setProgressBar,
       }}
     >
       {children}
