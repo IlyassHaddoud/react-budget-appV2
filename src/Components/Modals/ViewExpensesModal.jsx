@@ -1,15 +1,16 @@
 import React, { useContext } from "react";
-import Button from "react-bootstrap/Button";
+import ListGroup from "react-bootstrap/ListGroup";
 import Modal from "react-bootstrap/Modal";
-import Form from "react-bootstrap/Form";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BudgetContext } from "../../Contexts/BudgetContext";
+import { FiDelete } from "react-icons/fi";
 
-const ViewExpenses = ({ expenses }) => {
-  const { showExpenseView, handleCloseExpenseView } = useContext(BudgetContext);
+const ViewExpensesModal = ({ showExpenseView, setExpenseView, name }) => {
+  const { getExpenses, removeExpense } = useContext(BudgetContext);
+  const expenses = getExpenses(name);
   return (
     <>
-      <Modal show={showExpenseView} onHide={handleCloseExpenseView}>
+      <Modal show={showExpenseView} onHide={() => setExpenseView(false)}>
         {expenses.length > 0 && (
           <>
             <Modal.Header closeButton>
@@ -18,8 +19,19 @@ const ViewExpenses = ({ expenses }) => {
             <Modal.Body>
               <ListGroup>
                 {expenses.map((ex) => (
-                  <ListGroup.Item>
-                    {ex.description} | {ex.amount}
+                  <ListGroup.Item
+                    key={ex.id}
+                    className="d-flex justify-content-between"
+                  >
+                    <div>{ex.description}</div>
+                    <div>
+                      <FiDelete
+                        size={25}
+                        color="red"
+                        cursor="pointer"
+                        onClick={() => removeExpense(name, ex.id)}
+                      />
+                    </div>
                   </ListGroup.Item>
                 ))}
               </ListGroup>
@@ -40,4 +52,4 @@ const ViewExpenses = ({ expenses }) => {
   );
 };
 
-export default ViewExpenses;
+export default ViewExpensesModal;

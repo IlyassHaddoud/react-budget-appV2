@@ -6,6 +6,7 @@ export const BudgetContext = createContext();
 const BudgetContextProvider = ({ children }) => {
   // Budgets
   const [budgets, setBudgets] = useState([]);
+
   // Budget Modal
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -47,12 +48,28 @@ const BudgetContextProvider = ({ children }) => {
     const updatedBudget = budgets.map((b) => {
       if (b.name == budget) {
         const expenses = b.expenses;
-        return { ...b, expenses: [...expenses, { amount, description }] };
+        return {
+          ...b,
+          expenses: [...expenses, { id: uuidv4(), amount, description }],
+        };
       }
       return b;
     });
     setBudgets(updatedBudget);
     setShowExpense(false);
+  };
+
+  const removeExpense = (budgetName, expenseId) => {
+    const updatedBudget = budgets.map((b) => {
+      if (b.name == budgetName) {
+        const updatedExpenses = b.expenses.filter((ex) => {
+          return ex.id !== expenseId;
+        });
+        return { ...b, expenses: updatedExpenses };
+      }
+      return b;
+    });
+    setBudgets(updatedBudget);
   };
 
   const getExpenses = (name) => {
@@ -62,17 +79,25 @@ const BudgetContextProvider = ({ children }) => {
     return budget[0].expenses;
   };
 
-  const setProgressBar = (expences, budget) => {
-    const sum = expences.reduce((total, ob) => {
+  const getExpensesAmount = (name) => {
+    const budget = budgets.filter((b) => {
+      return b.name == name;
+    });
+    return budget[0].expenses.reduce((total, ob) => {
       return total + parseInt(ob.amount);
     }, 0);
-
-    console.log(sum);
   };
 
-  useEffect(() => {
-    console.log(budgets);
-  }, [budgets]);
+  const setProgressBar = (expenses, totalBudget) => {
+    const sum = expenses.reduce((total, ob) => {
+      return total + parseInt(ob.amount);
+    }, 0);
+    return (sum / parseInt(totalBudget)) * 100;
+  };
+
+  // useEffect(() => {
+  //   console.log(budgets);
+  // }, [budgets]);
 
   return (
     <BudgetContext.Provider
@@ -93,6 +118,12 @@ const BudgetContextProvider = ({ children }) => {
         handleSubmitExpense,
         getExpenses,
         setProgressBar,
+        showExpenseView,
+        setShowExpenseView,
+        handleCloseExpenseView,
+        handleShowExpenseView,
+        removeExpense,
+        getExpensesAmount,
       }}
     >
       {children}
